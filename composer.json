@@ -1,5 +1,5 @@
 {
-    "name": "bijanmmarkes/php-gtfs-realtime-sdk",
+    "name": "bijanmmarkes/gtfs-realtime-php-sdk",
     "description": "PHP Classes and custom buffer for integrating GTFS real-time into PHP projects.",
     "type": "library",
     "autoload": {
