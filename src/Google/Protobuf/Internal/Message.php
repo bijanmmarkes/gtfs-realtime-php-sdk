@@ -1599,7 +1599,11 @@ class Message
         } elseif ($field->isRepeated()) {
             return count($values) !== 0;
         } else {
-            return $values !== $this->defaultValue($field);
+            if ($field->getType() === GPBType::ENUM) {
+                return true;
+            } else {
+                return $values !== $this->defaultValue($field);
+            }
         }
     }
 
