@@ -1,0 +1,23 @@
+{
+    "name": "bijanmmarkes/php-gtfs-real-time-transit",
+    "description": "PHP Classes and custom buffer for integrating GTFS real-time into PHP projects.",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Google\\Protobuf\\": "src/Google/Protobuf",
+            "GPBMetadata\\Google\\Protobuf\\": "src/GPBMetadata/Google/Protobuf",
+            "Google\\Transit\\Realtime\\": "src/gtfs-rt/Google/Transit/Realtime",
+            "GPBMetadata\\Src\\": "src/gtfs-rt/GPBMetadata"
+        }
+    },
+    "authors": [
+        {
+            "name": "bijanmmarkes",
+            "email": "bijammarkes@gmail.com"
+        }
+    ],
+    "require": {
+        "protobuf-php/protobuf": "^0.1.3",
+        "protobuf-php/protobuf-plugin": "^0.1.3"
+    }
+}
