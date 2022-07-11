@@ -83,6 +83,10 @@ Line: 1597
   } else {
      - return $values !== $this->defaultValue($field);
        + if ($field->getType() === GPBType::ENUM) {
+       + // Account for new field "SeverityLevel" which has a default starting with 1.
+       + if ($field->getName() === 'severity_level' && empty($values)) {
+       +   return false;
+       + }
        +   return true;
        + } else {
        +   return $values !== $this->defaultValue($field);
@@ -92,6 +96,9 @@ Line: 1597
 
 ```php
 if ($field->getType() === GPBType::ENUM) {
+    if ($field->getName() === 'severity_level' && empty($values)) {
+      return false;
+    }
     return true;
 } else {
     return $values !== $this->defaultValue($field);

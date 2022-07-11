@@ -1600,6 +1600,9 @@ class Message
             return count($values) !== 0;
         } else {
             if ($field->getType() === GPBType::ENUM) {
+                if ($field->getName() === 'severity_level' && empty($values)) {
+                    return false;
+                }
                 return true;
             } else {
                 return $values !== $this->defaultValue($field);
