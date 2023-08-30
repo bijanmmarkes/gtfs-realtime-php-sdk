@@ -7,6 +7,7 @@ namespace Google\Transit\Realtime;
 use Google\Protobuf\Internal\GPBType;
 use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Transit\Realtime\TranslatedImage\LocalizedImage;
 
 /**
  * An internationalized image containing per-language versions of a URL linking to an image
@@ -38,7 +39,7 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type \Google\Transit\Realtime\TranslatedImage\LocalizedImage $localized_image
+     *     @type LocalizedImage[]|RepeatedField $localized_image
      *           At least one localized image must be provided.
      * }
      */
@@ -51,14 +52,14 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
      * At least one localized image must be provided.
      *
      * Generated from protobuf field <code>.google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
-     * @return \Google\Transit\Realtime\TranslatedImage\LocalizedImage|null
+     * @return LocalizedImage[]|RepeatedField|null
      */
     public function getLocalizedImage()
     {
         return $this->localized_image;
     }
 
-    public function hasLocalizedImage()
+    public function hasLocalizedImage(): bool
     {
         return isset($this->localized_image);
     }
@@ -72,16 +73,16 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
      * At least one localized image must be provided.
      *
      * Generated from protobuf field <code>.google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
-     * @param \Google\Transit\Realtime\TranslatedImage\LocalizedImage $var
-     * @return $this
+     * @param LocalizedImage[]|RepeatedField $var
+     * @return TranslatedImage
+     * @throws \Exception
      */
-    public function setLocalizedImage($var)
+    public function setLocalizedImage($var): TranslatedImage
     {
-        GPBUtil::checkMessage($var, \Google\Transit\Realtime\TranslatedImage\LocalizedImage::class);
-        $this->localized_image = $var;
+        $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, LocalizedImage::class);
+        $this->localized_image = $arr;
 
         return $this;
     }
 
 }
-
