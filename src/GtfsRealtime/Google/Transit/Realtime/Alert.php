@@ -34,13 +34,13 @@ class Alert extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.transit.realtime.Alert.Cause cause = 6;</code>
      */
-    protected $cause = 1;
+    protected $cause = 0;
     /**
      * optional Effect effect = 7 [default = UNKNOWN_EFFECT];
      *
      * Generated from protobuf field <code>.google.transit.realtime.Alert.Effect effect = 7;</code>
      */
-    protected $effect = 8;
+    protected $effect = 0;
     /**
      * The URL which provides additional information about the alert.
      * optional TranslatedString url = 8;
@@ -102,11 +102,11 @@ class Alert extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type \Google\Transit\Realtime\TimeRange[]|\Google\Protobuf\Internal\RepeatedField $active_period
+     *     @type array<\Google\Transit\Realtime\TimeRange>|\Google\Protobuf\Internal\RepeatedField $active_period
      *           Time when the alert should be shown to the user. If missing, the
      *           alert will be shown as long as it appears in the feed.
      *           If multiple ranges are given, the alert will be shown during all of them.
-     *     @type \Google\Transit\Realtime\EntitySelector[]|\Google\Protobuf\Internal\RepeatedField $informed_entity
+     *     @type array<\Google\Transit\Realtime\EntitySelector>|\Google\Protobuf\Internal\RepeatedField $informed_entity
      *           Entities whose users we should notify of this alert.
      *     @type int $cause
      *           optional Cause cause = 6 [default = UNKNOWN_CAUSE];
@@ -161,7 +161,7 @@ class Alert extends \Google\Protobuf\Internal\Message
      * If multiple ranges are given, the alert will be shown during all of them.
      *
      * Generated from protobuf field <code>repeated .google.transit.realtime.TimeRange active_period = 1;</code>
-     * @param \Google\Transit\Realtime\TimeRange[]|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\Google\Transit\Realtime\TimeRange>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setActivePeriod($var)
@@ -187,7 +187,7 @@ class Alert extends \Google\Protobuf\Internal\Message
      * Entities whose users we should notify of this alert.
      *
      * Generated from protobuf field <code>repeated .google.transit.realtime.EntitySelector informed_entity = 5;</code>
-     * @param \Google\Transit\Realtime\EntitySelector[]|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\Google\Transit\Realtime\EntitySelector>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setInformedEntity($var)

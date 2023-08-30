@@ -74,3 +74,4 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
     }
 
 }
+

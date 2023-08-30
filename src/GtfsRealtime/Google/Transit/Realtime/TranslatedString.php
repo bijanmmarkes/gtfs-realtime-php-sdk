@@ -37,7 +37,7 @@ class TranslatedString extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type \Google\Transit\Realtime\TranslatedString\Translation[]|\Google\Protobuf\Internal\RepeatedField $translation
+     *     @type array<\Google\Transit\Realtime\TranslatedString\Translation>|\Google\Protobuf\Internal\RepeatedField $translation
      *           At least one translation must be provided.
      * }
      */
@@ -61,7 +61,7 @@ class TranslatedString extends \Google\Protobuf\Internal\Message
      * At least one translation must be provided.
      *
      * Generated from protobuf field <code>repeated .google.transit.realtime.TranslatedString.Translation translation = 1;</code>
-     * @param \Google\Transit\Realtime\TranslatedString\Translation[]|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\Google\Transit\Realtime\TranslatedString\Translation>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setTranslation($var)

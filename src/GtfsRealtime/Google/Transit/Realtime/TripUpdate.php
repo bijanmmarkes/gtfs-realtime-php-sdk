@@ -121,7 +121,7 @@ class TripUpdate extends \Google\Protobuf\Internal\Message
      *     @type \Google\Transit\Realtime\VehicleDescriptor $vehicle
      *           Additional information on the vehicle that is serving this trip.
      *           optional VehicleDescriptor vehicle = 3;
-     *     @type \Google\Transit\Realtime\TripUpdate\StopTimeUpdate[]|\Google\Protobuf\Internal\RepeatedField $stop_time_update
+     *     @type array<\Google\Transit\Realtime\TripUpdate\StopTimeUpdate>|\Google\Protobuf\Internal\RepeatedField $stop_time_update
      *           Updates to StopTimes for the trip (both future, i.e., predictions, and in
      *           some cases, past ones, i.e., those that already happened).
      *           The updates must be sorted by stop_sequence, and apply for all the
@@ -295,7 +295,7 @@ class TripUpdate extends \Google\Protobuf\Internal\Message
      * - stop_sequences 10,... have unknown delay.
      *
      * Generated from protobuf field <code>repeated .google.transit.realtime.TripUpdate.StopTimeUpdate stop_time_update = 2;</code>
-     * @param \Google\Transit\Realtime\TripUpdate\StopTimeUpdate[]|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\Google\Transit\Realtime\TripUpdate\StopTimeUpdate>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setStopTimeUpdate($var)
