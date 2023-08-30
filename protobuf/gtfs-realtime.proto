@@ -776,7 +776,7 @@ message TranslatedImage {
     //extensions 9000 to 9999;
   }
   // At least one localized image must be provided.
-  LocalizedImage localized_image = 1;
+  repeated LocalizedImage localized_image = 1;
 
   // The extensions namespace allows 3rd-party developers to extend the
   // GTFS Realtime Specification in order to add and evaluate new features and
