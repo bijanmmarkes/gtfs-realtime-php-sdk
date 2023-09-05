@@ -28,9 +28,9 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
     /**
      * At least one localized image must be provided.
      *
-     * Generated from protobuf field <code>.google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
+     * Generated from protobuf field <code>repeated .google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
      */
-    protected $localized_image = null;
+    private $localized_image;
 
     /**
      * Constructor.
@@ -38,7 +38,7 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type \Google\Transit\Realtime\TranslatedImage\LocalizedImage $localized_image
+     *     @type array<\Google\Transit\Realtime\TranslatedImage\LocalizedImage>|\Google\Protobuf\Internal\RepeatedField $localized_image
      *           At least one localized image must be provided.
      * }
      */
@@ -50,35 +50,25 @@ class TranslatedImage extends \Google\Protobuf\Internal\Message
     /**
      * At least one localized image must be provided.
      *
-     * Generated from protobuf field <code>.google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
-     * @return \Google\Transit\Realtime\TranslatedImage\LocalizedImage|null
+     * Generated from protobuf field <code>repeated .google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
+     * @return \Google\Protobuf\Internal\RepeatedField
      */
     public function getLocalizedImage()
     {
         return $this->localized_image;
     }
 
-    public function hasLocalizedImage()
-    {
-        return isset($this->localized_image);
-    }
-
-    public function clearLocalizedImage()
-    {
-        unset($this->localized_image);
-    }
-
     /**
      * At least one localized image must be provided.
      *
-     * Generated from protobuf field <code>.google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
-     * @param \Google\Transit\Realtime\TranslatedImage\LocalizedImage $var
+     * Generated from protobuf field <code>repeated .google.transit.realtime.TranslatedImage.LocalizedImage localized_image = 1;</code>
+     * @param array<\Google\Transit\Realtime\TranslatedImage\LocalizedImage>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setLocalizedImage($var)
     {
-        GPBUtil::checkMessage($var, \Google\Transit\Realtime\TranslatedImage\LocalizedImage::class);
-        $this->localized_image = $var;
+        $arr = GPBUtil::checkRepeatedField($var, \Google\Protobuf\Internal\GPBType::MESSAGE, \Google\Transit\Realtime\TranslatedImage\LocalizedImage::class);
+        $this->localized_image = $arr;
 
         return $this;
     }

@@ -20,10 +20,6 @@
         }
     ],
     "require": {
-        "php": "^7.4 | ^8.0 | ^8.1"
-    },
-    "require-dev": {
-        "protobuf-php/protobuf": "^0.1.3",
-        "protobuf-php/protobuf-plugin": "^0.1.3"
+        "php": "^7.4 | ^8.0 | ^8.1 | ^8.2"
     }
 }

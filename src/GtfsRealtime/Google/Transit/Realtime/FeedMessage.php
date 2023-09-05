@@ -47,7 +47,7 @@ class FeedMessage extends \Google\Protobuf\Internal\Message
      *     @type \Google\Transit\Realtime\FeedHeader $header
      *           Metadata about this feed and feed message.
      *           required FeedHeader header = 1;
-     *     @type \Google\Transit\Realtime\FeedEntity[]|\Google\Protobuf\Internal\RepeatedField $entity
+     *     @type array<\Google\Transit\Realtime\FeedEntity>|\Google\Protobuf\Internal\RepeatedField $entity
      *           Contents of the feed.
      * }
      */
@@ -109,7 +109,7 @@ class FeedMessage extends \Google\Protobuf\Internal\Message
      * Contents of the feed.
      *
      * Generated from protobuf field <code>repeated .google.transit.realtime.FeedEntity entity = 2;</code>
-     * @param \Google\Transit\Realtime\FeedEntity[]|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<\Google\Transit\Realtime\FeedEntity>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setEntity($var)
