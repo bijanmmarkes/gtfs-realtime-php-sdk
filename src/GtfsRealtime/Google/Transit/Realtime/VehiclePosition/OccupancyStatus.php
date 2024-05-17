@@ -66,6 +66,19 @@ class OccupancyStatus
      * Generated from protobuf enum <code>NOT_ACCEPTING_PASSENGERS = 6;</code>
      */
     const NOT_ACCEPTING_PASSENGERS = 6;
+    /**
+     * The vehicle or carriage doesn't have any occupancy data available at that time.
+     *
+     * Generated from protobuf enum <code>NO_DATA_AVAILABLE = 7;</code>
+     */
+    const NO_DATA_AVAILABLE = 7;
+    /**
+     * The vehicle or carriage is not boardable and never accepts passengers.
+     * Useful for special vehicles or carriages (engine, maintenance carriage, etc…).
+     *
+     * Generated from protobuf enum <code>NOT_BOARDABLE = 8;</code>
+     */
+    const NOT_BOARDABLE = 8;
 
     private static $valueToName = [
         self::PBEMPTY => 'EMPTY',
@@ -75,6 +88,8 @@ class OccupancyStatus
         self::CRUSHED_STANDING_ROOM_ONLY => 'CRUSHED_STANDING_ROOM_ONLY',
         self::FULL => 'FULL',
         self::NOT_ACCEPTING_PASSENGERS => 'NOT_ACCEPTING_PASSENGERS',
+        self::NO_DATA_AVAILABLE => 'NO_DATA_AVAILABLE',
+        self::NOT_BOARDABLE => 'NOT_BOARDABLE',
     ];
 
     public static function name($value)

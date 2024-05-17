@@ -84,6 +84,20 @@ class VehiclePosition extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.google.transit.realtime.VehiclePosition.OccupancyStatus occupancy_status = 9;</code>
      */
     protected $occupancy_status = 0;
+    /**
+     * A percentage value indicating the degree of passenger occupancy in the vehicle.
+     * The values are represented as an integer without decimals. 0 means 0% and 100 means 100%.
+     * The value 100 should represent the total maximum occupancy the vehicle was designed for,
+     * including both seated and standing capacity, and current operating regulations allow.
+     * The value may exceed 100 if there are more passengers than the maximum designed capacity.
+     * The precision of occupancy_percentage should be low enough that individual passengers cannot be tracked boarding or alighting the vehicle.
+     * If multi_carriage_status is populated with per-carriage occupancy_percentage,
+     * then this field should describe the entire vehicle with all carriages accepting passengers considered.
+     * This field is still experimental, and subject to change. It may be formally adopted in the future.
+     *
+     * Generated from protobuf field <code>uint32 occupancy_percentage = 10;</code>
+     */
+    protected $occupancy_percentage = 0;
 
     /**
      * Constructor.
@@ -124,6 +138,16 @@ class VehiclePosition extends \Google\Protobuf\Internal\Message
      *           optional CongestionLevel congestion_level = 6;
      *     @type int $occupancy_status
      *           optional OccupancyStatus occupancy_status = 9;
+     *     @type int $occupancy_percentage
+     *           A percentage value indicating the degree of passenger occupancy in the vehicle.
+     *           The values are represented as an integer without decimals. 0 means 0% and 100 means 100%.
+     *           The value 100 should represent the total maximum occupancy the vehicle was designed for,
+     *           including both seated and standing capacity, and current operating regulations allow.
+     *           The value may exceed 100 if there are more passengers than the maximum designed capacity.
+     *           The precision of occupancy_percentage should be low enough that individual passengers cannot be tracked boarding or alighting the vehicle.
+     *           If multi_carriage_status is populated with per-carriage occupancy_percentage,
+     *           then this field should describe the entire vehicle with all carriages accepting passengers considered.
+     *           This field is still experimental, and subject to change. It may be formally adopted in the future.
      * }
      */
     public function __construct($data = NULL) {
@@ -421,6 +445,48 @@ class VehiclePosition extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkEnum($var, \Google\Transit\Realtime\VehiclePosition\OccupancyStatus::class);
         $this->occupancy_status = $var;
+
+        return $this;
+    }
+
+    /**
+     * A percentage value indicating the degree of passenger occupancy in the vehicle.
+     * The values are represented as an integer without decimals. 0 means 0% and 100 means 100%.
+     * The value 100 should represent the total maximum occupancy the vehicle was designed for,
+     * including both seated and standing capacity, and current operating regulations allow.
+     * The value may exceed 100 if there are more passengers than the maximum designed capacity.
+     * The precision of occupancy_percentage should be low enough that individual passengers cannot be tracked boarding or alighting the vehicle.
+     * If multi_carriage_status is populated with per-carriage occupancy_percentage,
+     * then this field should describe the entire vehicle with all carriages accepting passengers considered.
+     * This field is still experimental, and subject to change. It may be formally adopted in the future.
+     *
+     * Generated from protobuf field <code>uint32 occupancy_percentage = 10;</code>
+     * @return int
+     */
+    public function getOccupancyPercentage()
+    {
+        return $this->occupancy_percentage;
+    }
+
+    /**
+     * A percentage value indicating the degree of passenger occupancy in the vehicle.
+     * The values are represented as an integer without decimals. 0 means 0% and 100 means 100%.
+     * The value 100 should represent the total maximum occupancy the vehicle was designed for,
+     * including both seated and standing capacity, and current operating regulations allow.
+     * The value may exceed 100 if there are more passengers than the maximum designed capacity.
+     * The precision of occupancy_percentage should be low enough that individual passengers cannot be tracked boarding or alighting the vehicle.
+     * If multi_carriage_status is populated with per-carriage occupancy_percentage,
+     * then this field should describe the entire vehicle with all carriages accepting passengers considered.
+     * This field is still experimental, and subject to change. It may be formally adopted in the future.
+     *
+     * Generated from protobuf field <code>uint32 occupancy_percentage = 10;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setOccupancyPercentage($var)
+    {
+        GPBUtil::checkUint32($var);
+        $this->occupancy_percentage = $var;
 
         return $this;
     }

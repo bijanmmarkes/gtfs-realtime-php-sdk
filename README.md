@@ -47,8 +47,17 @@ and empty body, which in practice would be an Alert, TripUpdate, or VehiclePosit
 ---
 #### Generating new Files
 
+- Installing required Packages:
+```
+composer require protobuf-php/protobuf --dev
+composer require protobuf-php/protobuf-plugin --dev
+
+```
+
 ```
 php ./vendor/bin/protobuf --include-descriptors -i . -o ./src/gtfs ./protobuf/gtfs-realtime.proto
+
+# Copy Files from gtfs to GtfsRealtime Directory to see DIFF in changes.
 ```
 
 # Changes required for GTFS-Realtime:

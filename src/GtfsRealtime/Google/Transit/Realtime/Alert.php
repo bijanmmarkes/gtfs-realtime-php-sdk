@@ -34,13 +34,13 @@ class Alert extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.transit.realtime.Alert.Cause cause = 6;</code>
      */
-    protected $cause = 1;
+    protected $cause = 0;
     /**
      * optional Effect effect = 7 [default = UNKNOWN_EFFECT];
      *
      * Generated from protobuf field <code>.google.transit.realtime.Alert.Effect effect = 7;</code>
      */
-    protected $effect = 8;
+    protected $effect = 0;
     /**
      * The URL which provides additional information about the alert.
      * optional TranslatedString url = 8;
