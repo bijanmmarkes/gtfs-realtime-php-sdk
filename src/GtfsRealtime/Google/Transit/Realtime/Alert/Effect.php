@@ -57,6 +57,14 @@ class Effect
      * Generated from protobuf enum <code>STOP_MOVED = 9;</code>
      */
     const STOP_MOVED = 9;
+    /**
+     * Generated from protobuf enum <code>NO_EFFECT = 10;</code>
+     */
+    const NO_EFFECT = 10;
+    /**
+     * Generated from protobuf enum <code>ACCESSIBILITY_ISSUE = 11;</code>
+     */
+    const ACCESSIBILITY_ISSUE = 11;
 
     private static $valueToName = [
         self::PROTO3_DEFAULT_EFFECT => 'PROTO3_DEFAULT_EFFECT',
@@ -69,6 +77,8 @@ class Effect
         self::OTHER_EFFECT => 'OTHER_EFFECT',
         self::UNKNOWN_EFFECT => 'UNKNOWN_EFFECT',
         self::STOP_MOVED => 'STOP_MOVED',
+        self::NO_EFFECT => 'NO_EFFECT',
+        self::ACCESSIBILITY_ISSUE => 'ACCESSIBILITY_ISSUE',
     ];
 
     public static function name($value)
