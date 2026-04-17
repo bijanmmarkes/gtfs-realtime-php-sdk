@@ -62,4 +62,19 @@ final class AlertTest extends TestCase
         self::assertSame(2, Cause::OTHER_CAUSE);
         self::assertSame(12, Cause::MEDICAL_EMERGENCY);
     }
+
+    /**
+     * Pins a hand-patch on the regenerated Alert.php: $cause and $effect
+     * properties default to UNKNOWN_CAUSE (1) and UNKNOWN_EFFECT (8) so a
+     * fresh Alert returns the proto2 spec defaults rather than the proto3
+     * sentinel value 0 (PROTO3_DEFAULT_*).
+     *
+     * If protoc regeneration clobbers this, re-apply per README Developer Notes.
+     */
+    public function testNewAlertReturnsUpstreamSpecDefaults(): void
+    {
+        $alert = new Alert();
+        self::assertSame(Cause::UNKNOWN_CAUSE, $alert->getCause());
+        self::assertSame(Effect::UNKNOWN_EFFECT, $alert->getEffect());
+    }
 }

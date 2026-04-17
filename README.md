@@ -93,8 +93,14 @@ This writes to:
 - `src/GtfsRealtime/GPBMetadata/Protobuf/GtfsRealtime.php` — descriptor metadata
 
 After regenerating, re-run the test suite (`composer test`) to confirm the
-`Message.php` enum patch is still in place — the regression test in
-`tests/Proto3EnumPatchRegressionTest.php` will fail if it was clobbered.
+post-generation patches are still in place:
+
+1. The `Message.php` enum patch (see Developer Notes below) — covered by
+   `tests/Proto3EnumPatchRegressionTest.php`.
+2. The `Alert.php` default-value patch — covered by
+   `tests/AlertTest.php::testNewAlertReturnsUpstreamSpecDefaults`.
+
+Both will fail loudly if a regeneration silently reverts them.
 
 #### Notes and gotchas
 
@@ -165,6 +171,24 @@ if ($field->isMap()) {
 
 `tests/Proto3EnumPatchRegressionTest.php` pins all of this behavior. If the
 patch is reverted by a dependency update, those tests fail loudly.
+
+#### Patch 2: Alert.php default values
+
+`protoc` regenerates `Alert.php` with `protected $cause = 0;` and `protected $effect = 0;`
+because that's the proto3 zero-value. The upstream proto2 spec actually declares
+`[default = UNKNOWN_CAUSE]` (=1) and `[default = UNKNOWN_EFFECT]` (=8). To make
+a freshly constructed `new Alert()` return the upstream-spec defaults rather
+than the PROTO3_DEFAULT_* sentinel, hand-edit `Alert.php` after regeneration:
+
+```php
+// In src/GtfsRealtime/Google/Transit/Realtime/Alert.php near line 38:
+protected $cause = 1;   // UNKNOWN_CAUSE (was 0)
+protected $effect = 8;  // UNKNOWN_EFFECT (was 0)
+```
+
+Combined with the Message.php patch above (which force-serializes all enum
+fields), this means an empty Alert serializes to `cause=UNKNOWN_CAUSE,
+effect=UNKNOWN_EFFECT` on the wire — matching the proto2 spec defaults.
 
 #### Useful Links
 
