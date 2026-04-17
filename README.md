@@ -1,16 +1,39 @@
 # GTFS Realtime PHP SDK
 
 ---
-This SDK is primarily using auto-generated files using the protoc command. There are some modifications put in place
-which allow it to work with GTFS Realtime. An example of that would be the porting of the `gtfs-realtime.proto` file to `proto3` 
+This SDK is primarily using auto-generated files from the official `protoc` compiler's native PHP output. There are some modifications put in place
+which allow it to work with GTFS Realtime. An example of that would be the porting of the `gtfs-realtime.proto` file to `proto3`
 so that the protoc command actually works. There are also changes that allow us to use ENUM defaults that are `0` which aren't friendly with the proto standard. ex: `Incrementality FULL_DATASET` is overwritten
 and defaulted to `DIFFERENTIAL` which is a big issue when creating feeds as it is currently
 an experimental field and typically not used at all.
 
+## Spec coverage
+
+The bundled `gtfs-realtime.proto` is kept in sync with the upstream
+[GTFS-Realtime reference proto](https://github.com/google/transit/blob/master/gtfs-realtime/proto/gtfs-realtime.proto),
+including recent/experimental additions:
+
+- `FeedHeader.feed_version`
+- `FeedEntity.shape`, `.stop`, `.trip_modifications`
+- `TripUpdate.StopTimeEvent.scheduled_time`
+- `TripUpdate.StopTimeUpdate.departure_occupancy_status`, `.stop_time_properties`, `ScheduleRelationship.UNSCHEDULED`
+- `TripUpdate.TripProperties` (trip_id, start_date/time, shape_id, headsign, short_name)
+- `VehiclePosition.multi_carriage_details` with the `CarriageDetails` sub-message
+- `Alert.cause_detail`, `Alert.effect_detail`
+- `TripDescriptor.ScheduleRelationship` extras: `REPLACEMENT`, `DUPLICATED`, `DELETED`, `NEW`
+- `TripDescriptor.ModifiedTripSelector`
+- `VehicleDescriptor.wheelchair_accessible` with the `WheelchairAccessible` enum
+- `EntitySelector.direction_id`
+- Top-level `Stop` (with `WheelchairBoarding` enum), `TripModifications`, `StopSelector`, `ReplacementStop`
+
+### Custom additions (not in upstream)
+
+- `Alert.Cause.SPECIAL_EVENT = 13` — reserved for feeds that need to signal a planned special event as a cause.
+
 ## Examples
 
 Create an empty FeedMessage with a valid FeedHeader attached, typically when there is no data to display,
-this is what Google expects to see from an empty feed with no data. Empty feeds are more common with Alerts 
+this is what Google expects to see from an empty feed with no data. Empty feeds are more common with Alerts
 as if there are no active alerts, there should simply be a non-stale feed header with the timestamp being updated
 every 30 seconds or so.
 
@@ -36,91 +59,143 @@ $body = $feedMessage->serializeToString();
 $file = fopen('empty-feed.pb', 'wb');
 
 fwrite($file, $body);
-
 ```
 
 Keep in mind all we did was create an empty FeedMessage with the bare-minimums to pass validation, which is a valid FeedHeader
 and empty body, which in practice would be an Alert, TripUpdate, or VehiclePosition within a FeedEntity object.
 
+## Running tests
+
+```
+composer install
+composer test
+```
+
+PHPUnit covers the round-trip behavior of every message the SDK exposes,
+including the new spec additions, the custom `SPECIAL_EVENT` cause, and a
+regression test pinning the `Message.php` enum patch (see Developer Notes).
+
 ## Building it yourself
 
 ---
-#### Generating new Files
+#### Regenerating PHP classes
 
-- Installing required Packages:
-```
-composer require protobuf-php/protobuf --dev
-composer require protobuf-php/protobuf-plugin --dev
+Requires [protoc](https://github.com/protocolbuffers/protobuf/releases) on the `PATH`
+(tested with `protoc 33.4`). The official PHP generator is built in.
 
 ```
-
-```
-php ./vendor/bin/protobuf --include-descriptors -i . -o ./src/gtfs ./protobuf/gtfs-realtime.proto
-
-# Copy Files from gtfs to GtfsRealtime Directory to see DIFF in changes.
+protoc --proto_path=. --php_out=src/GtfsRealtime protobuf/gtfs-realtime.proto
 ```
 
-# Changes required for GTFS-Realtime:
+This writes to:
+
+- `src/GtfsRealtime/Google/Transit/Realtime/` — message and enum classes
+- `src/GtfsRealtime/GPBMetadata/Protobuf/GtfsRealtime.php` — descriptor metadata
+
+After regenerating, re-run the test suite (`composer test`) to confirm the
+post-generation patches are still in place:
+
+1. The `Message.php` enum patch (see Developer Notes below) — covered by
+   `tests/Proto3EnumPatchRegressionTest.php`.
+2. The `Alert.php` default-value patch — covered by
+   `tests/AlertTest.php::testNewAlertReturnsUpstreamSpecDefaults`.
+
+Both will fail loudly if a regeneration silently reverts them.
+
+#### Notes and gotchas
+
+- **`NEW` is renamed to `PBNEW`**: `TripDescriptor.ScheduleRelationship.NEW` is a PHP reserved word. `protoc --php_out` automatically renames the generated constant to `PBNEW` (value stays `8`). Use `TripDescriptor\ScheduleRelationship::PBNEW` in code.
+- **Proto3 zero-value sentinels**: Enums whose upstream proto2 default isn't `0` (`Alert.Cause`, `Alert.Effect`, `Alert.SeverityLevel`) have an artificial `PROTO3_DEFAULT_*` at index 0. See Developer Notes below for the runtime patch that handles these.
+
+# Changes required for GTFS-Realtime
 
 ``
 src/Google/Protobuf/Internal/Message.php
 method: existField
 ``
 
-
 ### Developer Notes
 
-For GTFS-RT we need to add ENUMS even if there's a default value
-otherwise it won't be considered valid.
+For GTFS-RT we need to serialize ENUMS even when they are the proto3 zero-value,
+otherwise the wire format strips meaningful fields like `Incrementality`.
 
-The following section must be modified after each generation:
+The following section must be present in the vendored
+`src/Google/Protobuf/Internal/Message.php` after each regeneration or vendor update.
 
 This is only required because the protobuf PHP generator doesn't account
-for GTFS-Realtime using 0 for some ENUM defaults.
+for GTFS-Realtime using `0` for some ENUM defaults.
 
 An example of this would be `Incrementality` within the `FeedHeader`.
-Without this patch, it would default the Incrementality to `DIFFERENTIAL = 1` where in most
-GTFS-RT Feeds, that is almost never the case, and `FULL_DATASET` is almost always used as the other field is still considered experimental.
-This results in compiled feeds using the wrong `Incrementality` without the ability to change it.
+Without this patch, the value `FULL_DATASET = 0` is stripped from the wire,
+and downstream parsers receive `DIFFERENTIAL = 1` as the proto3 default — which
+is almost never what the producer intended (the `DIFFERENTIAL` mode is still experimental).
+
+The patch at **line 1597** of `src/Google/Protobuf/Internal/Message.php`:
 
 ```php
-Line: 1597
-  if ($field->isMap()) {
-      return count($values) !== 0;
-  } elseif ($field->isRepeated()) {
-      return count($values) !== 0;
-  } else {
-     - return $values !== $this->defaultValue($field);
-       + if ($field->getType() === GPBType::ENUM) {
-       + // Account for new field "SeverityLevel" which has a default starting with 1.
-       + if ($field->getName() === 'severity_level' && empty($values)) {
-       +   return false;
-       + }
-       +   return true;
-       + } else {
-       +   return $values !== $this->defaultValue($field);
-       + }
-  }
-```
-
-```php
-if ($field->getType() === GPBType::ENUM) {
-    if ($field->getName() === 'severity_level' && empty($values)) {
-      return false;
-    }
-    return true;
+// Before (vanilla protobuf-php runtime):
+if ($field->isMap()) {
+    return count($values) !== 0;
+} elseif ($field->isRepeated()) {
+    return count($values) !== 0;
 } else {
     return $values !== $this->defaultValue($field);
 }
 ```
 
+```php
+// After (GTFS-RT patched):
+if ($field->isMap()) {
+    return count($values) !== 0;
+} elseif ($field->isRepeated()) {
+    return count($values) !== 0;
+} else {
+    if ($field->getType() === GPBType::ENUM) {
+        // severity_level is special-cased to drop when unset, because
+        // producers typically want "absent" rather than PROTO3_DEFAULT_SEVERITY_LEVEL.
+        if ($field->getName() === 'severity_level' && empty($values)) {
+            return false;
+        }
+        return true;
+    } else {
+        return $values !== $this->defaultValue($field);
+    }
+}
+```
 
-#### Useful Links:
+#### Behavior notes and asymmetries
+
+- `severity_level` (Alert.SeverityLevel) is the only enum that's *suppressed* when unset.
+- `cause` (Alert.Cause) and `effect` (Alert.Effect) use the same PROTO3_DEFAULT sentinel pattern but are *not* suppressed; they will always appear on the wire, carrying `PROTO3_DEFAULT_CAUSE`/`PROTO3_DEFAULT_EFFECT = 0` when unset.
+- Enums whose proto3 zero is the legitimate default (`WheelchairAccessible.NO_VALUE`, `Stop.WheelchairBoarding.UNKNOWN`, `DropOffPickupType.REGULAR`, `OccupancyStatus.EMPTY`, etc.) will also always be serialized. This is a minor byte-size cost but semantically neutral.
+
+`tests/Proto3EnumPatchRegressionTest.php` pins all of this behavior. If the
+patch is reverted by a dependency update, those tests fail loudly.
+
+#### Patch 2: Alert.php default values
+
+`protoc` regenerates `Alert.php` with `protected $cause = 0;` and `protected $effect = 0;`
+because that's the proto3 zero-value. The upstream proto2 spec actually declares
+`[default = UNKNOWN_CAUSE]` (=1) and `[default = UNKNOWN_EFFECT]` (=8). To make
+a freshly constructed `new Alert()` return the upstream-spec defaults rather
+than the PROTO3_DEFAULT_* sentinel, hand-edit `Alert.php` after regeneration:
+
+```php
+// In src/GtfsRealtime/Google/Transit/Realtime/Alert.php near line 38:
+protected $cause = 1;   // UNKNOWN_CAUSE (was 0)
+protected $effect = 8;  // UNKNOWN_EFFECT (was 0)
+```
+
+Combined with the Message.php patch above (which force-serializes all enum
+fields), this means an empty Alert serializes to `cause=UNKNOWN_CAUSE,
+effect=UNKNOWN_EFFECT` on the wire — matching the proto2 spec defaults.
+
+#### Useful Links
 
 - https://github.com/protocolbuffers/protobuf-php
 - https://github.com/google/transit/blob/master/gtfs-realtime/proto/gtfs-realtime.proto
 - https://github.com/brians-code/gtfs-realtime-proto3
 - https://raw.githubusercontent.com/google/transit/master/gtfs-realtime/proto/gtfs-realtime.proto
 - https://github.com/protocolbuffers/protobuf/releases
-- https://github.com/protocolbuffers/protobuf/pull/8006/files 
+- https://github.com/protocolbuffers/protobuf/pull/8006/files
   - (hex2bin no longer used).
